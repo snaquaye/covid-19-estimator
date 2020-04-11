@@ -52,10 +52,18 @@ app.use(
   )
 );
 
-app.get('/api/v1/on-covid-19/logs', (request, response) => {
-  response.setHeader('content-type', 'text/plain');
+app.use((request, response, next) => {
+  if (request.url.indexOf('logs') >= 0) {
+    request.headers.accept = 'text/plain';
+    response.setHeader('content-type', 'text/plain');
+  }
 
+  next();
+});
+
+app.get('/api/v1/on-covid-19/logs', (request, response) => {
   const reader = fs.createReadStream(logPath);
+
   reader.pipe(response);
   response.on('finish', () => {
     response.send();
