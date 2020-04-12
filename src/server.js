@@ -39,11 +39,15 @@ app.use(bodyParser.json());
 app.use(
   morgan(
     (tokens, req, res) => {
+      const responseTime = `done in ${tokens['response-time'](req, res)}`;
+      const url = tokens.url(req, res);
+      const pathIndex = url.indexOf('on-covid-19');
+      const paths = url.slice(pathIndex);
+
       const logStr = [
-        tokens.method(req, res),
-        tokens.url(req, res),
-        tokens.status(req, res),
-        tokens['response-time'](req, res)
+        new Date().getTime(),
+        paths,
+        responseTime
       ].join('\t\t');
 
       return `${logStr} ms`;
