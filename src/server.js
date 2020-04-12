@@ -39,14 +39,18 @@ app.use(bodyParser.json());
 app.use(
   morgan(
     (tokens, req, res) => {
+      let responseTime = parseInt(tokens['response-time'](req, res), 10).toString();
+
+      if (responseTime.length === 1) responseTime = `0${responseTime}`;
+
       const logStr = [
         tokens.method(req, res),
         tokens.url(req, res),
         tokens.status(req, res),
-        tokens['response-time'](req, res)
+        responseTime
       ].join('\t\t');
 
-      return `${logStr} ms`;
+      return `${logStr}ms`;
     },
     { stream: accessLogStream }
   )
@@ -54,8 +58,8 @@ app.use(
 
 app.use((request, response, next) => {
   if (request.url.includes('logs')) {
-    request.headers.accept = 'text/plain';
-    response.setHeader('content-type', 'text/plain');
+    request.headers.accept = 'text';
+    response.setHeader('content-type', 'text');
   }
 
   next();
