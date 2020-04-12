@@ -58,8 +58,8 @@ app.use(
 
 app.use((request, response, next) => {
   if (request.url.includes('logs')) {
-    request.headers.accept = 'text/plain';
-    response.setHeader('content-type', 'text/plain');
+    request.headers.accept = 'text';
+    response.setHeader('content-type', 'text');
   }
 
   next();
